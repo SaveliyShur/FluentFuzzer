@@ -5,12 +5,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
       <NoWarn>8603, 8604, 8602, 1998</NoWarn>
+      <Version>0.0.2-alpha-1</Version>
+      <Authors>SchurSaveliy</Authors>
+      <Description>Fluent fuzzer is simple fuzzer for your projects like Api or Unit tests projects</Description>
+      <PackageTags>fuzzing</PackageTags>
+      <PackageLicenseFile></PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="Misc\big-list-of-naughty-strings.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="Misc\big-list-of-naughty-strings.txt" PackageCopyToOutput="true">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

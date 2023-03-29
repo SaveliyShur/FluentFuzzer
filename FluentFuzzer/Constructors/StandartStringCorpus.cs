@@ -13,6 +13,8 @@
         {
             if (!Directory.Exists(_pathToFolder))
                 throw new ApplicationException("Standart corpus not found. System error.");
+            if (Directory.GetFiles(_pathToFolder, "", SearchOption.AllDirectories).Count() == 0)
+                throw new ApplicationException("Standart corpus not found. System error.");
 
             var files = Directory.GetFiles(_pathToFolder, "", SearchOption.AllDirectories);
             foreach (var file in files)
