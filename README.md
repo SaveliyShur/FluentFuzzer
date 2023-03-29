@@ -4,7 +4,7 @@ If you need fuzzing for your integration tests or unit tests, you can use Fluent
 
 ## How to use
 
-1. Simple exaple, which used NUnit framework. Parameter timeInSec set duration method execution:  
+1. Simple example, which used NUnit framework. Parameter timeInSec set duration method execution:  
 
 ```
 public class ConstructClass
