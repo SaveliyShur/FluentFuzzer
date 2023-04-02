@@ -1,21 +1,13 @@
 ﻿using FuzzerRunner;
+using FuzzerUnitTests.FuzzerTests.Helpers;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FuzzerUnitTests.FuzzerTests
 {
-    public class ConstructClass
-    {
-        public string Name { get; set; }
-
-        public List<string> NameChildren { get; set; }
-
-        public int Age { get; set; }
-    }
-
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     public class FuzzerRunnerConstructTests
     {
         [Test]

@@ -6,6 +6,7 @@ using System;
 namespace FuzzerUnitTests.ConstructorTests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     public class ConstructClassTests
     {
         [Test]

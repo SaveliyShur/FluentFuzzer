@@ -1,4 +1,5 @@
-﻿using FuzzerRunner.FuzzerRun;
+﻿using FluentFuzzer.FuzzerExceptions;
+using FuzzerRunner.FuzzerRun;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
@@ -6,19 +7,23 @@ namespace FuzzerRunner
 {
     public class Fuzzer : IFuzzer
     {
-        private static readonly JsonSerializerSettings _jsonSerializerSettings = new();
+        public static readonly JsonSerializerSettings JsonSerializerSettings = new();
 
         static Fuzzer()
         {
-            _jsonSerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            JsonSerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }
 
         private IConstructor _constructor = new RandomTypeConstructor();
         private int _threads = 1;
 
         private string? _folder = null;
+        private string _testName = Guid.NewGuid().ToString();
+        private bool _throwErrorIfAnyFailed = false;
 
         public static Fuzzer Instance => new ();
+
+        public bool RunnerFailed { get; private set; } = false;
 
         public IFuzzer MakeParallelExecution(int threads)
         {
@@ -27,7 +32,7 @@ namespace FuzzerRunner
             return this;
         }
 
-        public async Task RunAsync<T>(Func<T, Task> action, int timeInSec = 30)
+        public async Task<IFuzzer> RunAsync<T>(Func<T, Task> action, int timeInSec = 30)
         {
             var taskList = new List<Task>(_threads);
 
@@ -38,6 +43,11 @@ namespace FuzzerRunner
             }
 
             await Task.WhenAll(taskList);
+
+            if (RunnerFailed && _throwErrorIfAnyFailed)
+                throw new RunnerTestFailedException("Test failed because any fuzzer run was fail.");
+
+            return this;
 
         }
 
@@ -58,13 +68,20 @@ namespace FuzzerRunner
             return this;
         }
 
+        public IFuzzer SetTestName(string testName)
+        {
+            _testName = testName;
+
+            return this;
+        }
+
         private async Task RunOneAsync<T>(Func<T, Task> action, int timeInSec)
         {
             var timer = new Stopwatch();
             timer.Start();
             while (timer.ElapsedMilliseconds < timeInSec * 1000)
             {
-                T? input = default(T);
+                T? input = default;
                 try
                 {
                     input = _constructor.Construct<T>();
@@ -72,6 +89,7 @@ namespace FuzzerRunner
                 }
                 catch (Exception ex)
                 {
+                    RunnerFailed = true;
                     await WriteResultAsync(input, ex.Message);
                 }
             }
@@ -83,7 +101,7 @@ namespace FuzzerRunner
         {
             string obj = string.Empty;
             if (typeof(T).IsClass)
-                obj = JsonConvert.SerializeObject(input, _jsonSerializerSettings);
+                obj = JsonConvert.SerializeObject(input, JsonSerializerSettings);
             else if (input is not null)
                 obj = input.ToString();
 
@@ -93,16 +111,31 @@ namespace FuzzerRunner
             }
             else
             {
-                var commonPart = Guid.NewGuid().ToString();
-                var objectFileName = commonPart + "object.log";
-                var errorFileName = commonPart + "error.log";
+                try
+                {
+                    var testFolder = Path.Combine(_folder, _testName);
+                    if (!Directory.Exists(testFolder))
+                        Directory.CreateDirectory(testFolder);
 
-                using var fileObject = File.CreateText(objectFileName);
-                await fileObject.WriteLineAsync(obj);
+                    var commonPart = Guid.NewGuid().ToString();
+                    var objectFileName = Path.Combine(testFolder, commonPart + "object.log");
+                    var errorFileName = Path.Combine(testFolder, commonPart + "error.log");
 
-                using var errorFile = File.CreateText(errorFileName);
-                await errorFile.WriteLineAsync(error);
+                    await File.WriteAllTextAsync(objectFileName, obj);
+                    await File.WriteAllTextAsync(errorFileName, error);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Cannot write result to folder. Exception: {ex.Message}");
+                }
             }
+        }
+
+        public IFuzzer ThrowErrorIfAnyFailed()
+        {
+            _throwErrorIfAnyFailed = true;
+
+            return this;
         }
     }
 }

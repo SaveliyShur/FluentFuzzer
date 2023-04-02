@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace FuzzerUnitTests.FuzzerTests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     public class FuzzerRunnerTests
     {
 
