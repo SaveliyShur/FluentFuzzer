@@ -78,5 +78,27 @@ namespace FuzzerUnitTests.ConstructorTests
                 randomConstructor.Construct<ConstructClass6>();
             }
         }
+
+        [Test]
+        [Timeout(10000)]
+        public void ConstructDateTimeOffset_ShouldBeOk()
+        {
+            for (int i = 0; i < 10000; i++)
+            {
+                var randomConstructor = new RandomTypeConstructor();
+                randomConstructor.Construct<DateTimeOffset>();
+            }
+        }
+
+        [Test]
+        [Timeout(10000)]
+        public void ConstructDateTimet_ShouldBeOk()
+        {
+            for (int i = 0; i < 10000; i++)
+            {
+                var randomConstructor = new RandomTypeConstructor();
+                randomConstructor.Construct<DateTime>();
+            }
+        }
     }
 }

@@ -1,19 +1,42 @@
 ﻿#pragma warning disable CS8629 // Nullable value type may be null.
 #pragma warning disable CS8605 // Unboxing a possibly null value.
 
+using FluentFuzzer.Constructors;
 using FuzzerRunner.Constructors;
 using FuzzerRunner.Utils;
 
 namespace FuzzerRunner
 {
-    public class RandomTypeConstructor : BaseConstructor
+    public class RandomTypeConstructor : BaseConstructor, ITuningConstructor
     {
         private static readonly object _lockRandomObject = new ();
         private static readonly Random _random = new ();
+        private int? _maxStringLenght = null;
+        private bool _notNullMainObject = false;
+
+        public void SetMaxStringLenght(int lenght)
+        {
+            _maxStringLenght = lenght;
+        }
+
+        public void SetNotNullMainObject()
+        {
+            _notNullMainObject = true;
+        }
 
         public override T Construct<T>()
         {
-            return (T)ConstructByType(typeof(T));
+            var obj = (T)ConstructByType(typeof(T));
+
+            if (_notNullMainObject)
+            {
+                while (obj is null)
+                {
+                    obj = (T)ConstructByType(typeof(T));
+                }
+            }
+
+            return obj;
         }
 
         private object ConstructByType(Type type)
@@ -21,6 +44,14 @@ namespace FuzzerRunner
             if (type == typeof(string))
             {
                 return ConstructRandomString();
+            }
+            else if (type == typeof(DateTimeOffset))
+            {
+                return ConstructRandomDatetimeOffset();
+            }
+            else if (type == typeof(DateTime))
+            {
+                return ConstructRandomDatetimeOffset().DateTime;
             }
             else if (type == typeof(int))
             {
@@ -112,7 +143,12 @@ namespace FuzzerRunner
 
         private string ConstructRandomString()
         {
-            return GetRandomString();
+            var str = GetRandomString();
+
+            if (_maxStringLenght is not null && str?.Length > _maxStringLenght)
+                str = str.Substring(0, _maxStringLenght.Value);
+
+            return str;
         }
 
         private object ConstructRandomNullable(Type type)
@@ -209,6 +245,18 @@ namespace FuzzerRunner
                 7 => GetRandomLong(),
                 _ => throw new InvalidOperationException("ConstructRandomLong error."),
             };
+        }
+
+        private DateTimeOffset ConstructRandomDatetimeOffset()
+        {
+            var year = GetRundomInt(1, 9998);
+            var mounth = GetRundomInt(1, 12);
+            var day = GetRundomInt(1, 28);
+            var hour = GetRundomInt(0, 23);
+            var minute = GetRundomInt(0, 59);
+            var second = GetRundomInt(0, 59);
+            var dateTime = new DateTime(year, mounth, day, hour, minute, second);
+            return new DateTimeOffset(dateTime);
         }
 
         private int GetCapacity()
