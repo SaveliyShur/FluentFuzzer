@@ -1,13 +1,11 @@
-﻿namespace FuzzerRunner.Constructors
+﻿using FluentFuzzer.Constructors.StringCorpus;
+
+namespace FuzzerRunner.Constructors.StringCorpus
 {
-    internal class StandartStringCorpus
+    internal class StandartStringCorpus : IStringCorpuse
     {
-        private const string _commentStart = "# ";
         private static readonly string _pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Misc");
         private static readonly List<string> _corpuse = new();
-
-        private static readonly object _locker = new ();
-        private static readonly Random _random = new ();
 
         static StandartStringCorpus()
         {
@@ -20,7 +18,7 @@
             foreach (var file in files)
             {
                 var lines = File.ReadLines(file)
-                    .Where(l => !l.StartsWith(_commentStart))
+                    .Where(l => !l.StartsWith(IStringCorpuse.CommentStart))
                     .Where(l => !string.IsNullOrEmpty(l))
                     .ToArray();
                 _corpuse.AddRange(lines);
@@ -28,17 +26,9 @@
             }
         }
 
-        public static string GetRandomString()
+        public IReadOnlyList<string> GetCorpuse()
         {
-            return _corpuse[GetRandomInt(_corpuse.Count)];
-        }
-
-        private static int GetRandomInt(int end)
-        {
-            lock (_locker)
-            {
-                return _random.Next(end);
-            }
+            return _corpuse;
         }
     }
 }

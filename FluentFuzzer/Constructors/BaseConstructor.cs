@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentFuzzer.Constructors.StringCorpus;
+using FuzzerRunner.Constructors.StringCorpus;
 
 namespace FuzzerRunner.Constructors
 {
     public abstract class BaseConstructor : IConstructor
     {
         private bool _isUsedStandartStringCorpus = true;
-        private bool _isUsedUserStringCorpus = false;
-        private static bool _isUsedUserStaticStringCorpus = false;
+
+        private static StaticStringCorpus? _staticStringCorpus = null;
+        private UserStringCorpus? _userStringCorpus = null;
+        private TestStringCorpus _testStringCorpus = new ();
 
         public abstract T Construct<T>();
 
@@ -19,26 +18,62 @@ namespace FuzzerRunner.Constructors
             _isUsedStandartStringCorpus = isUsed;
         }
 
-        public void UseStringCorpus(string folderPath)
+        public async Task UseStringCorpusAsync(string folderPath)
         {
-            throw new NotImplementedException();
+            _userStringCorpus = new UserStringCorpus();
+            await _userStringCorpus.ReadStringCorpusAsync(folderPath);
         }
 
-        public Task UseStringCorpusAsync(string folderPath)
+        public void UseStringCorpus(string folderPath)
         {
-            throw new NotImplementedException();
+            _userStringCorpus = new UserStringCorpus();
+            _userStringCorpus.ReadStringCorpus(folderPath);
+        }
+
+        public async Task UseStaticStringCorpusAsync(string folderPath)
+        {
+            _staticStringCorpus = new StaticStringCorpus();
+            await _staticStringCorpus.ReadStringCorpusAsync(folderPath);
+        }
+
+        public void UseStaticStringCorpus(string folderPath)
+        {
+            _staticStringCorpus = new StaticStringCorpus();
+            _staticStringCorpus.ReadStringCorpus(folderPath);
+        }
+
+        public void AddStringToTestStringCorpus(string testString)
+        {
+            _testStringCorpus.Add(testString);
         }
 
         protected string GetRandomString()
         {
+            var generator = new GenerateStringFromCorpuse();
+
             if (_isUsedStandartStringCorpus)
             {
-                return StandartStringCorpus.GetRandomString();
+                generator.AddStandartCorpuse(new StandartStringCorpus());
             }
-            else
+            
+            if (_staticStringCorpus is not null && _userStringCorpus is not null)
             {
-                throw new ApplicationException("String corpus isnt defined");
+                generator.AddUserStringsCorpuse(_userStringCorpus);
             }
+
+            if (_staticStringCorpus is null && _userStringCorpus is not null)
+            {
+                generator.AddUserStringsCorpuse(_userStringCorpus);
+            }
+
+            if (_staticStringCorpus is not null && _userStringCorpus is null)
+            {
+                generator.AddUserStringsCorpuse(_staticStringCorpus);
+            }
+
+            generator.AddTestStringCorpuse(_testStringCorpus);
+
+            return generator.GenerateRandomString();
         }
     }
 }
