@@ -1,4 +1,6 @@
-﻿namespace FluentFuzzer.Constructors.StringCorpus
+﻿using FluentFuzzer.Constructors.ConstructorExceptions;
+
+namespace FluentFuzzer.Constructors.StringCorpus
 {
     internal class GenerateStringFromCorpuse
     {
@@ -27,6 +29,10 @@
         public string GenerateRandomString()
         {
             var countAllStrings = _standartStringCorpus.Count + _userStringCorpus.Count + _testStringCorpus.Count;
+
+            if (countAllStrings == 0)
+                throw new ConstructException("Any corpus not found.");
+
             var randomCount = GetRandomInt(countAllStrings);
 
             if (randomCount < _standartStringCorpus.Count)
