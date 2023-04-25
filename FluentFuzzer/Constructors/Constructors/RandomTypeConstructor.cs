@@ -145,10 +145,15 @@ namespace FuzzerRunner
         {
             var str = GetRandomString();
 
-            if (_maxStringLenght is not null && str?.Length > _maxStringLenght)
-                str = str.Substring(0, _maxStringLenght.Value);
+            for (var i = 0; i < 100; i++)
+            {
+                if (_maxStringLenght is not null && str?.Length > _maxStringLenght)
+                    str = GetRandomString();
+                else
+                    return str;
+            }
 
-            return str;
+            return "";
         }
 
         private object ConstructRandomNullable(Type type)
