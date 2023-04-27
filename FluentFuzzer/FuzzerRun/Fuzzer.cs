@@ -20,6 +20,7 @@ namespace FuzzerRunner
         private string? _folder = null;
         private string _testName = Guid.NewGuid().ToString();
         private bool _throwErrorIfAnyFailed = false;
+        private bool _changeStringToBlocksTitles = false;
 
         public static Fuzzer Instance => new ();
 
@@ -100,6 +101,8 @@ namespace FuzzerRunner
         private async Task WriteResultAsync<T>(T? input, string error)
         {
             string obj = string.Empty;
+            if (_changeStringToBlocksTitles)
+                input = (T)_constructor.ChangeAllStringToSectionTitles(input);
             if (typeof(T).IsClass)
                 obj = JsonConvert.SerializeObject(input, JsonSerializerSettings);
             else if (input is not null)
@@ -134,6 +137,13 @@ namespace FuzzerRunner
         public IFuzzer ThrowErrorIfAnyFailed()
         {
             _throwErrorIfAnyFailed = true;
+
+            return this;
+        }
+
+        public IFuzzer ChangeAllStringInObjectToStringBlocksTitles()
+        {
+            _changeStringToBlocksTitles = true;
 
             return this;
         }

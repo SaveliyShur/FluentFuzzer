@@ -10,6 +10,13 @@
         T Construct<T>();
 
         /// <summary>
+        /// Change all strings in object to section title name
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        object ChangeAllStringToSectionTitles(object t);
+
+        /// <summary>
         /// Use string in all files in folder and subfolder.
         /// You can write comments in the files, use # symbol
         /// </summary>

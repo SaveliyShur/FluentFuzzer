@@ -46,5 +46,11 @@
         /// <returns>Current instance</returns>
         /// <exception cref="RunnerTestFailedException">Any fuzzing retry were failed</exception>
         IFuzzer ThrowErrorIfAnyFailed();
+
+        /// <summary>
+        /// Change all string in object to string blocks titles. It may by use to AI generator object and run in fuzzer.
+        /// </summary>
+        /// <returns></returns>
+        IFuzzer ChangeAllStringInObjectToStringBlocksTitles();
     }
 }

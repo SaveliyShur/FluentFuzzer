@@ -8,7 +8,7 @@ namespace FluentFuzzer.DataPreparation
 {
     public class DataPrepare<T> : IDataPrepare<T> where T : class
     {
-        public const string CSV_DELIMITER = ";;;";
+        public const string CSV_DELIMITER = "column_separator";
         public const string END_OBJECT_FILE_NAME = "object.log";
         public const string END_CLASS_LABEL_FILE_NAME = "object.log.cls";
 

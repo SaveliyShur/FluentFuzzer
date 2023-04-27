@@ -47,7 +47,44 @@ namespace FuzzerRunner.Constructors
             _testStringCorpus.Add(testString);
         }
 
+        public object ChangeAllStringToSectionTitles(object t)
+        {
+            if (t is null)
+                return t;
+
+            var generator = GetStringGenerator();
+            if (t.GetType() == typeof(string))
+            {
+                return generator.GetSectionTitleByString((string)t);
+            }
+
+            if (t.GetType().IsClass)
+            {
+                var properties = t.GetType().GetProperties();
+                foreach (var property in properties)
+                {
+                    if (property.CanWrite)
+                    {
+                        var oldValue = property.GetValue(t);
+                        var newObject = ChangeAllStringToSectionTitles(oldValue);
+
+                        property.SetValue(t, newObject);
+                    }
+                }
+            }
+
+            return t;
+        }
+
         protected string GetRandomString()
+        {
+            var generator = GetStringGenerator();
+
+            return generator.GenerateRandomString();
+        }
+
+
+        private GenerateStringFromCorpuse GetStringGenerator()
         {
             var generator = new GenerateStringFromCorpuse();
 
@@ -55,7 +92,7 @@ namespace FuzzerRunner.Constructors
             {
                 generator.AddStandartCorpuse(new StandartStringCorpus());
             }
-            
+
             if (_staticStringCorpus is not null && _userStringCorpus is not null)
             {
                 generator.AddUserStringsCorpuse(_userStringCorpus);
@@ -73,7 +110,7 @@ namespace FuzzerRunner.Constructors
 
             generator.AddTestStringCorpuse(_testStringCorpus);
 
-            return generator.GenerateRandomString();
+            return generator;
         }
     }
 }

@@ -4,7 +4,7 @@ using FuzzerRunner.Constructors;
 
 namespace FluentFuzzer.Constructors.Constructors
 {
-    public class EmptyConstructor<Model> : BaseConstructor, IUploadObjects<Model> where Model : class
+    public class SimpleConstructor<Model> : BaseConstructor, IUploadObjects<Model> where Model : class
     {
         private List<Model> _objects = new ();
         private int _counter = 0;

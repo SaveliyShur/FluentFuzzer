@@ -49,7 +49,7 @@ namespace FuzzerUnitTests.PrepareTests
                     if (prep.PrepareClass1_Enum == PrepareClass1_Enum.Lena)
                         throw new Exception("2");
                     throw new Exception("3");
-                }, timeInSec: 2);
+                }, timeInSec: 10);
 
             var files = Directory.GetFiles(_fullTestFolder).Where(f => f.EndsWith("error.log")).ToArray();
             foreach (var file in files)

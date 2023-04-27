@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace FuzzerUnitTests.ConstructorTests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.Fixtures)]
+    [NonParallelizable]
     public class SomeStringCorpusesTests
     {
         private readonly static string PathToMiscFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ConstructorTests", "Misc");

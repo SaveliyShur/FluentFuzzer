@@ -2,8 +2,14 @@
 {
     internal interface IStringCorpuse
     {
-        const string CommentStart = "# ";
+        public const string StandartTitleStart = "#	";
 
         IReadOnlyList<string> GetCorpuse();
+
+        IReadOnlyList<string> GetTitles();
+
+        IReadOnlyList<string> GetStringFromBlocksByTitle(string title);
+
+        string? GetTitleByStringOrNull(string str);
     }
 }

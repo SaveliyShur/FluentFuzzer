@@ -3,6 +3,7 @@
     internal class UserStringCorpus : IStringCorpuse
     {
         private IReadOnlyList<string>? _words = null;
+        private readonly Dictionary<string, List<string>> _corpuseByTitle = new();
 
         public IReadOnlyList<string> GetCorpuse()
         {
@@ -20,18 +21,11 @@
             var list = new List<string>();
             foreach (var file in files)
             {
-                var lines = (await File.ReadAllLinesAsync(file))
-                    .Where(l => !l.StartsWith(IStringCorpuse.CommentStart))
-                    .Where(l => !string.IsNullOrEmpty(l))
-                    .ToArray();
+                var lines = (await File.ReadAllLinesAsync(file)).ToArray();
 
-                if (lines.Any(l => string.IsNullOrEmpty(l)))
-                {
-                    lines.Where(l => !string.IsNullOrEmpty(l)).ToArray();
-                    list.Add("");
-                }
+                AddLinesToDictionary(lines);
 
-                list.AddRange(lines);
+                list.AddRange(lines.Where(l => !l.StartsWith(IStringCorpuse.StandartTitleStart)));
             }
 
             _words = list.AsReadOnly();
@@ -45,18 +39,11 @@
             var list = new List<string>();
             foreach (var file in files)
             {
-                var lines = File.ReadLines(file)
-                    .Where(l => !l.StartsWith(IStringCorpuse.CommentStart))
-                    .Where(l => !string.IsNullOrEmpty(l))
-                    .ToArray();
+                var lines = File.ReadLines(file).ToArray();
 
-                if (lines.Any(l => string.IsNullOrEmpty(l)))
-                {
-                    lines.Where(l => !string.IsNullOrEmpty(l)).ToArray();
-                    list.Add("");
-                }
+                AddLinesToDictionary(lines);
 
-                list.AddRange(lines);
+                list.AddRange(lines.Where(l => !l.StartsWith(IStringCorpuse.StandartTitleStart)));
             }
 
             _words = list.AsReadOnly();
@@ -73,6 +60,58 @@
                 throw new ApplicationException("UserString corpus not found. System error.");
             if (Directory.GetFiles(folder, "", SearchOption.AllDirectories).Where(f => f.EndsWith(".txt")).Count() == 0)
                 throw new ApplicationException("Files string corpus should end on '.txt' . System error.");
+        }
+
+        private void AddLinesToDictionary(string[] lines)
+        {
+            foreach (var line in lines)
+            {
+                var corpusInDictionary = new List<string>();
+                if (line.StartsWith(IStringCorpuse.StandartTitleStart))
+                {
+                    var title = line.Replace(IStringCorpuse.StandartTitleStart, "").Trim();
+
+                    if (_corpuseByTitle.ContainsKey(title))
+                    {
+                        corpusInDictionary = _corpuseByTitle[title];
+                    }
+                    else
+                    {
+                        corpusInDictionary = new List<string>();
+                        _corpuseByTitle.Add(title, corpusInDictionary);
+                    }
+                }
+                else
+                {
+                    corpusInDictionary.Add(line);
+                }
+            }
+        }
+
+        public IReadOnlyList<string> GetStringFromBlocksByTitle(string title)
+        {
+            if (!_corpuseByTitle.ContainsKey(title))
+                throw new ApplicationException("Title not found in corpus.");
+
+            return _corpuseByTitle[title];
+        }
+
+        public string? GetTitleByStringOrNull(string str)
+        {
+            foreach (var title in _corpuseByTitle.Keys)
+            {
+                if (_corpuseByTitle[title].Contains(str))
+                {
+                    return title;
+                }
+            }
+
+            return null;
+        }
+
+        public IReadOnlyList<string> GetTitles()
+        {
+            return _corpuseByTitle.Keys.ToList();
         }
     }
 }
