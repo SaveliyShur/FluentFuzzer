@@ -4,6 +4,6 @@
     {
         public T DataObject { get; set; }
 
-        public int ClassLabel { get; set; }
+        public int? ClassLabel { get; set; }
     }
 }

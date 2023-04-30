@@ -19,7 +19,7 @@ namespace FluentFuzzer.Constructors.Constructors
             lock(_lock)
             {
                 if (_counter >= _objects.Count)
-                    throw new ConstructException("All objects were constructed.");
+                    throw new ConstructorBreakException("All objects were constructed.");
 
                 _counter++;
 
@@ -30,6 +30,14 @@ namespace FluentFuzzer.Constructors.Constructors
         public void Upload(List<Model> list)
         {
             _objects = list.OrderBy(a => Guid.NewGuid()).ToList();
+        }
+
+        public void UploadWithStringsChangedOnSectionTitles(List<Model> list)
+        {
+            _objects = list
+                .Select(l => (Model)ChangeAllSectionTitleToRandomString(l))
+                .OrderBy(a => Guid.NewGuid())
+                .ToList();
         }
 
         public int Count()

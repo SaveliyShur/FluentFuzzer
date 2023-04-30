@@ -51,6 +51,6 @@
         /// Change all string in object to string blocks titles. It may by use to AI generator object and run in fuzzer.
         /// </summary>
         /// <returns></returns>
-        IFuzzer ChangeAllStringInObjectToStringBlocksTitles();
+        IFuzzer ChangeAllStringInObjectToStringSectionsTitles();
     }
 }

@@ -76,6 +76,35 @@ namespace FuzzerRunner.Constructors
             return t;
         }
 
+        public object ChangeAllSectionTitleToRandomString(object t)
+        {
+            if (t is null)
+                return t;
+
+            var generator = GetStringGenerator();
+            if (t.GetType() == typeof(string))
+            {
+                return generator.GetStringBySectionTitle((string)t);
+            }
+
+            if (t.GetType().IsClass)
+            {
+                var properties = t.GetType().GetProperties();
+                foreach (var property in properties)
+                {
+                    if (property.CanWrite)
+                    {
+                        var oldValue = property.GetValue(t);
+                        var newObject = ChangeAllSectionTitleToRandomString(oldValue);
+
+                        property.SetValue(t, newObject);
+                    }
+                }
+            }
+
+            return t;
+        }
+
         protected string GetRandomString()
         {
             var generator = GetStringGenerator();

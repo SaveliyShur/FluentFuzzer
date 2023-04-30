@@ -42,7 +42,7 @@ namespace FluentFuzzer.DataPreparation
             return pathToCsvFile;
         }
 
-        public async Task<int> UploadDataAsync(string folder)
+        public async Task<int> UploadDataAsync(string folder, bool isAddClassLabels = true)
         {
             if (!Directory.Exists(folder))
                 throw new ApplicationException("UploadDataAsync Folder not found. System error.");
@@ -54,7 +54,7 @@ namespace FluentFuzzer.DataPreparation
             if (!objectFiles.Any())
                 throw new ApplicationException($"Object files not found. Object files should be end on {END_OBJECT_FILE_NAME}");
 
-            if (!classesFiles.Any())
+            if (isAddClassLabels && !classesFiles.Any())
                 throw new ApplicationException($"Class label files not found. Class label files should be end on {END_CLASS_LABEL_FILE_NAME}");
 
             var objects = new List<DataModel<T>>(objectFiles.Count());
@@ -63,18 +63,24 @@ namespace FluentFuzzer.DataPreparation
             {
                 var fileObject = await File.ReadAllTextAsync(file);
                 var deserializeObj = JsonConvert.DeserializeObject<T>(fileObject);
+                int? cls = null;
 
-                var clsFile = classesFiles.FirstOrDefault(c => c.StartsWith(file));
+                if (isAddClassLabels)
+                {
+                    var clsFile = classesFiles.FirstOrDefault(c => c.StartsWith(file));
 
-                if (clsFile is null)
-                    throw new ApplicationException($"Class label file not found. Object file is {file}");
+                    if (clsFile is null)
+                        throw new ApplicationException($"Class label file not found. Object file is {file}");
 
-                var clsString = await File.ReadAllTextAsync(clsFile);
+                    var clsString = await File.ReadAllTextAsync(clsFile);
 
-                var isParceClassLabel = int.TryParse(clsString, out var cls);
+                    var isParceClassLabel = int.TryParse(clsString, out var clsIs);
 
-                if (!isParceClassLabel)
-                    throw new ApplicationException($"Class label should be int. Class label file is {clsFile}");
+                    if (!isParceClassLabel)
+                        throw new ApplicationException($"Class label should be int. Class label file is {clsFile}");
+
+                    cls = clsIs;
+                }
 
                 objects.Add(new DataModel<T>()
                 {

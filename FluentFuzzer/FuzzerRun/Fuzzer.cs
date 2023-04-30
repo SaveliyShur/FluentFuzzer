@@ -1,4 +1,5 @@
-﻿using FluentFuzzer.FuzzerExceptions;
+﻿using FluentFuzzer.Constructors.ConstructorExceptions;
+using FluentFuzzer.FuzzerExceptions;
 using FuzzerRunner.FuzzerRun;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -88,6 +89,11 @@ namespace FuzzerRunner
                     input = _constructor.Construct<T>();
                     await action(input);
                 }
+                catch (ConstructorBreakException breakException)
+                {
+                    Console.WriteLine($"Constructor break. {breakException.Message}");
+                    break;
+                }
                 catch (Exception ex)
                 {
                     RunnerFailed = true;
@@ -141,7 +147,7 @@ namespace FuzzerRunner
             return this;
         }
 
-        public IFuzzer ChangeAllStringInObjectToStringBlocksTitles()
+        public IFuzzer ChangeAllStringInObjectToStringSectionsTitles()
         {
             _changeStringToBlocksTitles = true;
 
