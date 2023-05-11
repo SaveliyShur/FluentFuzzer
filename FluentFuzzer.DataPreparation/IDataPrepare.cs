@@ -3,7 +3,7 @@
     public interface IDataPrepare<T> where T : class
     {
         Task<int> UploadDataAsync(string folder, bool isAddClassLabels = true);
-        Task<List<T>> UploadDataTableAsync(string pathToTable);
+        List<T> UploadDataTable(string pathToTable, string? separator = null);
         Task<string> PrepareDataToDataTableAsync(string folder);
     }
 }

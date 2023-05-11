@@ -32,7 +32,15 @@ namespace FluentFuzzer.Constructors.Constructors
             _objects = list.OrderBy(a => Guid.NewGuid()).ToList();
         }
 
-        public void UploadWithStringsChangedOnSectionTitles(List<Model> list)
+        public void UploadWithSectionTitles(List<Model> list)
+        {
+            _objects = list
+                .Select(l => (Model)ChangeAllSectionTitleToRandomString(l))
+                .OrderBy(a => Guid.NewGuid())
+                .ToList();
+        }
+
+        public void UploadSectionTitlesToManyString(List<Model> list)
         {
             _objects = list
                 .Select(l => (Model)ChangeAllSectionTitleToRandomString(l))

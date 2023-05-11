@@ -1,0 +1,29 @@
+Int|StrintInMainClass|StringInInnerClass|InnerEnum|ClassLabel
+289401984|SQL Injection|Two-Byte Characters|One|1
+0|Script Injection|Script Injection|Nine|1
+0|Emoji|Script Injection|Ten|2
+0|Two-Byte Characters|Known CVEs and Vulnerabilities|Six|1
+0|Script Injection|Unicode Symbols|Four|2
+0|Script Injection|Script Injection|Four|2
+0|Two-Byte Characters|Reserved Strings|Ten|1
+0|Two-Byte Characters|Reserved Strings|Nine|1
+0|Script Injection|Script Injection|Six|3
+0|Reserved Strings|Server Code Injection|Seven|3
+0|Scunthorpe Problem|Reserved Strings|Ten|1
+53448064|Command Injection (Ruby)|Known CVEs and Vulnerabilities|One|1
+0|Two-Byte Characters|Reserved Strings|Nine|1
+0|Command Injection (Ruby)|Unicode Symbols|Ten|1
+0|Reserved Strings|Unicode Symbols|Seven|1
+0|Script Injection|Script Injection|Six|2
+0|Script Injection|Unicode Symbols|Four|1
+0|Emoji|Script Injection|Ten|2
+0|Unicode Symbols|Numeric Strings|One|1
+0|Script Injection|Script Injection|One|1
+0|Script Injection|Numeric Strings|One|1
+2240128|Trick Unicode|Script Injection|One|2
+0|Script Injection|Unicode Symbols|Four|2
+0|Script Injection|Script Injection|Three|1
+0|Script Injection|Numeric Strings|Six|1
+0|Script Injection|Scunthorpe Problem|Four|1
+2147483647|Trick Unicode|Script Injection|One|2
+161092480|Command Injection (Ruby)|Known CVEs and Vulnerabilities|One|2

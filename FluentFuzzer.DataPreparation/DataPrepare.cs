@@ -14,12 +14,6 @@ namespace FluentFuzzer.DataPreparation
 
         public static readonly string LINE_SEPARATOR = Environment.NewLine;
 
-        private static readonly CsvConfiguration CsvConfiguration = new(CultureInfo.InvariantCulture)
-        {
-            Delimiter = CSV_DELIMITER,
-            NewLine = LINE_SEPARATOR,
-        };
-
         private static string GeneratePathToCsvFile(string folder) => Path.Combine(folder, "DataCompile_" + Guid.NewGuid().ToString("N") + ".csv");
 
         public List<DataModel<T>> Data { get; private set; }
@@ -33,8 +27,13 @@ namespace FluentFuzzer.DataPreparation
                 throw new ApplicationException($"Data not uploaded. Use UploadDataAsync.");
 
             var pathToCsvFile = GeneratePathToCsvFile(folder);
+            var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = CSV_DELIMITER,
+            };
+
             using (var writer = new StreamWriter(pathToCsvFile))
-            using (var csv = new CsvWriter(writer, CsvConfiguration))
+            using (var csv = new CsvWriter(writer, csvConfig))
             {
                 await csv.WriteRecordsAsync(Data);
             }
@@ -94,19 +93,21 @@ namespace FluentFuzzer.DataPreparation
             return objects.Count;
         }
 
-        public async Task<List<T>> UploadDataTableAsync(string pathToTable)
+        public List<T> UploadDataTable(string pathToTable, string? separator = null)
         {
             if (!File.Exists(pathToTable))
                 throw new ApplicationException("UploadDataTableAsync File not found. System error.");
 
-            return await Task.Run(() =>
+            var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                using var reader = new StreamReader(pathToTable);
-                using var csv = new CsvReader(reader, CsvConfiguration);
-                var records = csv.GetRecords<DataModel<T>>().ToList();
+                Delimiter = separator ?? CSV_DELIMITER,
+            };
 
-                return records.Select(record => record.DataObject).ToList();
-            });
+            using var reader = new StreamReader(pathToTable);
+            using var csv = new CsvReader(reader, csvConfig);
+            var records = csv.GetRecords<DataModel<T>>().ToList();
+
+            return records.Select(record => record.DataObject).ToList();
         }
     }
 }

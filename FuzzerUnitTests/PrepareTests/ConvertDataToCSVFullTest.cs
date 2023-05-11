@@ -62,7 +62,7 @@ namespace FuzzerUnitTests.PrepareTests
             await dataPrepare.UploadDataAsync(_fullTestFolder);
             var pathToTable = await dataPrepare.PrepareDataToDataTableAsync(_fullTestFolder);
 
-            var dataAfterCsv = await dataPrepare.UploadDataTableAsync(pathToTable);
+            var dataAfterCsv = dataPrepare.UploadDataTable(pathToTable);
             dataAfterCsv.Should().HaveCount(files.Length);
         }
 
@@ -93,7 +93,7 @@ namespace FuzzerUnitTests.PrepareTests
             await dataPrepare.UploadDataAsync(_fullTestFolder);
             var pathToTable = await dataPrepare.PrepareDataToDataTableAsync(_fullTestFolder);
 
-            var dataAfterCsv = await dataPrepare.UploadDataTableAsync(pathToTable);
+            var dataAfterCsv = dataPrepare.UploadDataTable(pathToTable);
             dataAfterCsv.Should().HaveCount(1);
             var dataFirst = dataAfterCsv.First();
             dataFirst.A = "1010";

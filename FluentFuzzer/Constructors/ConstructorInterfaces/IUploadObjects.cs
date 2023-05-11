@@ -9,7 +9,8 @@ namespace FluentFuzzer.Constructors.ConstructorInterfaces
     public interface IUploadObjects<Model> where Model : class
     {
         void Upload(List<Model> list);
-        void UploadWithStringsChangedOnSectionTitles(List<Model> list);
+        void UploadWithSectionTitles(List<Model> list);
+        void UploadSectionTitlesToManyString(List<Model> list);
         int Count();
     }
 }
