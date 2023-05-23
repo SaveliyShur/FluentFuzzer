@@ -61,7 +61,7 @@ namespace FuzzerUnitTests.FuzzerTests
             await dataPrepare.UploadDataAsync(_fullTestFolder, false);
 
             var simpleConstructor = new SimpleConstructor<PrepareClass1>();
-            simpleConstructor.UploadWithStringsChangedOnSectionTitles(dataPrepare.Data.Select(d => d.DataObject).ToList());
+            simpleConstructor.UploadWithSectionTitles(dataPrepare.Data.Select(d => d.DataObject).ToList());
 
             await Fuzzer.Instance
                 .UseConstructor(simpleConstructor)

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FluentFuzzer.Constructors.ConstructorInterfaces
 {
-    public interface IUploadObjects<Model> where Model : class
+    public interface IUploadObjects<Model>
     {
+        void Add(Model model);
         void Upload(List<Model> list);
         void UploadWithSectionTitles(List<Model> list);
         void UploadSectionTitlesToManyString(List<Model> list);

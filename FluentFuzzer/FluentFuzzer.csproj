@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-      <NoWarn>8603, 8600, 8604, 8602, 1998</NoWarn>
-      <Version>0.1.1-beta</Version>
+      <NoWarn>8603, 8600, 8604, 8602, 8605, 8601, 1998, 0252</NoWarn>
+      <Version>0.1.1</Version>
       <Authors>SchurSaveliy</Authors>
       <Description>Fluent fuzzer is simple fuzzer for your projects like Api or Unit tests projects</Description>
       <PackageTags>fuzzing;Fuzzing;Fuzzer;Test;</PackageTags>

@@ -1,4 +1,6 @@
-﻿namespace FuzzerRunner
+﻿using FluentFuzzer.Utils;
+
+namespace FuzzerRunner
 {
     public interface IConstructor
     {
@@ -57,5 +59,9 @@
         void UseStandartStringCorpus(bool isUsed = true);
 
         void AddStringToTestStringCorpus(string testString);
+
+        void AddStringConverter(Func<string, string> converter);
+
+        ConstructorEnum GetConstructorEnum();
     }
 }

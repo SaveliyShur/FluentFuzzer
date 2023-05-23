@@ -2,6 +2,7 @@
 #pragma warning disable CS8605 // Unboxing a possibly null value.
 
 using FluentFuzzer.Constructors;
+using FluentFuzzer.Utils;
 using FuzzerRunner.Constructors;
 using FuzzerRunner.Utils;
 
@@ -24,6 +25,8 @@ namespace FuzzerRunner
             _notNullMainObject = true;
         }
 
+        public override ConstructorEnum GetConstructorEnum() => ConstructorEnum.Random;
+
         public override T Construct<T>()
         {
             var obj = (T)ConstructByType(typeof(T));
@@ -39,7 +42,7 @@ namespace FuzzerRunner
             return obj;
         }
 
-        private object ConstructByType(Type type)
+        internal object ConstructByType(Type type)
         {
             if (type == typeof(string))
             {
@@ -87,7 +90,7 @@ namespace FuzzerRunner
             }
         }
 
-        private object ConstructObject(Type type)
+        internal object ConstructObject(Type type)
         {
             var randomForNull = GetRundomInt(0, 100);
             if (randomForNull < 20)
@@ -141,7 +144,7 @@ namespace FuzzerRunner
             return objConsruct;
         }
 
-        private string ConstructRandomString()
+        internal string ConstructRandomString()
         {
             var str = GetRandomString();
 
@@ -156,7 +159,7 @@ namespace FuzzerRunner
             return "";
         }
 
-        private object ConstructRandomNullable(Type type)
+        internal object ConstructRandomNullable(Type type)
         {
             var randomForNull = GetRundomInt(0, 100);
             if (randomForNull < 20)
@@ -168,7 +171,7 @@ namespace FuzzerRunner
             return ConstructByType(innerType);
         }
 
-        private object ConstructRandomEnum(Type type)
+        internal object ConstructRandomEnum(Type type)
         {
             var values = Enum.GetValues(type);
             var enumNumber = GetRundomInt(0, values.Length);
@@ -176,7 +179,7 @@ namespace FuzzerRunner
             return values.GetValue(enumNumber);
         }
 
-        private object ConstructInterface(Type type)
+        internal object ConstructInterface(Type type)
         {
             if (type.Name == typeof(IDictionary<,>).Name ||
                 type.Name == typeof(IReadOnlyDictionary<,>).Name)
@@ -201,7 +204,7 @@ namespace FuzzerRunner
             throw new IndexOutOfRangeException($"Class for interface {type.Name} not found.");
         }
 
-        private int ConstructRandomInt()
+        internal int ConstructRandomInt()
         {
             var checker = GetRundomInt(0, 8);
             return checker switch
@@ -218,7 +221,7 @@ namespace FuzzerRunner
             };
         }
 
-        private short ConstructRandomShort()
+        internal short ConstructRandomShort()
         {
             var checker = GetRundomInt(0, 8);
             return checker switch
@@ -235,7 +238,7 @@ namespace FuzzerRunner
             };
         }
 
-        private long ConstructRandomLong()
+        internal long ConstructRandomLong()
         {
             var checker = GetRundomInt(0, 8);
             return checker switch
@@ -252,7 +255,7 @@ namespace FuzzerRunner
             };
         }
 
-        private DateTimeOffset ConstructRandomDatetimeOffset()
+        internal DateTimeOffset ConstructRandomDatetimeOffset()
         {
             var year = GetRundomInt(1, 9998);
             var mounth = GetRundomInt(1, 12);
@@ -264,7 +267,7 @@ namespace FuzzerRunner
             return new DateTimeOffset(dateTime);
         }
 
-        private int GetCapacity()
+        internal int GetCapacity()
         {
             var checker = GetRundomInt(0, 10000);
 
@@ -280,7 +283,7 @@ namespace FuzzerRunner
                 return 10;
         }
 
-        private int GetRundomInt(int? start = null, int? end = null)
+        internal int GetRundomInt(int? start = null, int? end = null)
         {
             lock(_lockRandomObject)
             {
@@ -295,7 +298,7 @@ namespace FuzzerRunner
             }
         }
 
-        private long GetRandomLong()
+        internal long GetRandomLong()
         {
             lock (_lockRandomObject)
             {

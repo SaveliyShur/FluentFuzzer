@@ -19,5 +19,10 @@ namespace FuzzerUnitTests.ConstructorTests.ConstructClasses
         public long E { get; set; }
 
         public int F { get; set; }
+
+        public override string ToString()
+        {
+            return $"A = {A}, B = {B}, C = {C}, D = {D}, E = {E}, F = {F}";
+        }
     }
 }

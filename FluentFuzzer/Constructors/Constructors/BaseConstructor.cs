@@ -1,4 +1,5 @@
 ﻿using FluentFuzzer.Constructors.StringCorpus;
+using FluentFuzzer.Utils;
 using FuzzerRunner.Constructors.StringCorpus;
 
 namespace FuzzerRunner.Constructors
@@ -11,7 +12,11 @@ namespace FuzzerRunner.Constructors
         private UserStringCorpus? _userStringCorpus = null;
         private TestStringCorpus _testStringCorpus = new ();
 
+        private List<Func<string, string>> _converters = new();
+
         public abstract T Construct<T>();
+
+        public abstract ConstructorEnum GetConstructorEnum();
 
         public void UseStandartStringCorpus(bool isUsed = true)
         {
@@ -108,10 +113,18 @@ namespace FuzzerRunner.Constructors
         protected string GetRandomString()
         {
             var generator = GetStringGenerator();
+            var str = generator.GenerateRandomString();
 
-            return generator.GenerateRandomString();
+            if (_converters is not null && _converters.Any())
+            {
+                foreach (var converter in _converters)
+                {
+                    str = converter(str);
+                }
+            }
+
+            return str;
         }
-
 
         private GenerateStringFromCorpuse GetStringGenerator()
         {
@@ -140,6 +153,11 @@ namespace FuzzerRunner.Constructors
             generator.AddTestStringCorpuse(_testStringCorpus);
 
             return generator;
+        }
+
+        public void AddStringConverter(Func<string, string> converter)
+        {
+            _converters.Add(converter);
         }
     }
 }

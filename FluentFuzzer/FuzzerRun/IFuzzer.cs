@@ -48,9 +48,11 @@
         IFuzzer ThrowErrorIfAnyFailed();
 
         /// <summary>
-        /// Change all string in object to string blocks titles. It may by use to AI generator object and run in fuzzer.
+        /// WARNING! Change all string in object to string blocks titles. It may by use to AI generator object and run in fuzzer.
         /// </summary>
         /// <returns></returns>
         IFuzzer ChangeAllStringInObjectToStringSectionsTitles();
+
+        IFuzzer AddNormalObjectToMutation();
     }
 }

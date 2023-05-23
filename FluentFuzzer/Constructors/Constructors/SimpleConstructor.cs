@@ -1,5 +1,6 @@
 ﻿using FluentFuzzer.Constructors.ConstructorExceptions;
 using FluentFuzzer.Constructors.ConstructorInterfaces;
+using FluentFuzzer.Utils;
 using FuzzerRunner.Constructors;
 
 namespace FluentFuzzer.Constructors.Constructors
@@ -10,6 +11,8 @@ namespace FluentFuzzer.Constructors.Constructors
         private int _counter = 0;
 
         private static readonly object _lock = new ();
+
+        public override ConstructorEnum GetConstructorEnum() => ConstructorEnum.Simple;
 
         public override T Construct<T>()
         {
@@ -51,6 +54,11 @@ namespace FluentFuzzer.Constructors.Constructors
         public int Count()
         {
             return _objects.Count;
+        }
+
+        public void Add(Model model)
+        {
+            _objects.Add(model);
         }
     }
 }

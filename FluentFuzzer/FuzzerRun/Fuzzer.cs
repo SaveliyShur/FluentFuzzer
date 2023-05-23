@@ -1,4 +1,5 @@
 ﻿using FluentFuzzer.Constructors.ConstructorExceptions;
+using FluentFuzzer.Constructors.Constructors;
 using FluentFuzzer.FuzzerExceptions;
 using FuzzerRunner.FuzzerRun;
 using Newtonsoft.Json;
@@ -22,6 +23,7 @@ namespace FuzzerRunner
         private string _testName = Guid.NewGuid().ToString();
         private bool _throwErrorIfAnyFailed = false;
         private bool _changeStringToBlocksTitles = false;
+        private bool _addObjectToNormalMutationObjects = false;
 
         public static Fuzzer Instance => new ();
 
@@ -88,6 +90,12 @@ namespace FuzzerRunner
                 {
                     input = _constructor.Construct<T>();
                     await action(input);
+
+                    if (_addObjectToNormalMutationObjects)
+                    {
+                        var ourMutationConstructor = (MutationConstructor<T>)_constructor;
+                        ourMutationConstructor.Add(input);
+                    }
                 }
                 catch (ConstructorBreakException breakException)
                 {
@@ -150,6 +158,18 @@ namespace FuzzerRunner
         public IFuzzer ChangeAllStringInObjectToStringSectionsTitles()
         {
             _changeStringToBlocksTitles = true;
+
+            return this;
+        }
+
+        public IFuzzer AddNormalObjectToMutation()
+        {
+            if (_constructor.GetConstructorEnum() != FluentFuzzer.Utils.ConstructorEnum.Mutation)
+            {
+                throw new InvalidOperationException($"You should set constructor {typeof(MutationConstructor<>)}");
+            }
+
+            _addObjectToNormalMutationObjects = true;
 
             return this;
         }
