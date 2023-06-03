@@ -17,6 +17,9 @@
 
         public IReadOnlyList<string> GetTitles()
         {
+            if (_words.Count == 0)
+                return new List<string>();
+
             return new List<string>() { TITLE };
         }
 

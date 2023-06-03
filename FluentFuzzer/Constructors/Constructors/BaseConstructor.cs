@@ -126,6 +126,12 @@ namespace FuzzerRunner.Constructors
             return str;
         }
 
+        protected string? GenerateRandomGuidStringFromStringCorpuse()
+        {
+            var generator = GetStringGenerator();
+            return generator.GenerateRandomGuidStringFromStringCorpuse();
+        }
+
         private GenerateStringFromCorpuse GetStringGenerator()
         {
             var generator = new GenerateStringFromCorpuse();

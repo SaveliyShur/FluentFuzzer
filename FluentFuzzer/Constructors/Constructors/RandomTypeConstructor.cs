@@ -72,6 +72,10 @@ namespace FuzzerRunner
             {
                 return ConstructRandomNullable(type);
             }
+            else if (type == typeof(Guid))
+            {
+                return ConstructRandomGuid();
+            }
             else if (type.IsEnum)
             {
                 return ConstructRandomEnum(type);
@@ -157,6 +161,32 @@ namespace FuzzerRunner
             }
 
             return "";
+        }
+
+        internal object ConstructRandomGuid()
+        {
+            var stringFromCorpuse = GenerateRandomGuidStringFromStringCorpuse();
+            if (stringFromCorpuse == null)
+            {
+                var randomForNull = GetRundomInt(0, 100);
+                if (randomForNull < 50)
+                    return Guid.NewGuid();
+                else
+                    return Guid.Empty;
+            }
+
+            var random = GetRundomInt(0, 100);
+            if (random < 10)
+            {
+                return Guid.Empty;
+            }
+
+            if(random >= 10 && random < 30)
+            {
+                return Guid.NewGuid();
+            }
+
+            return Guid.Parse(stringFromCorpuse);
         }
 
         internal object ConstructRandomNullable(Type type)

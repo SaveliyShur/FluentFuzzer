@@ -1,7 +1,10 @@
-﻿using FuzzerRunner;
+﻿using FluentAssertions;
+using FuzzerRunner;
 using FuzzerUnitTests.ConstructorTests.ConstructClasses;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FuzzerUnitTests.ConstructorTests
 {
@@ -99,6 +102,41 @@ namespace FuzzerUnitTests.ConstructorTests
                 var randomConstructor = new RandomTypeConstructor();
                 randomConstructor.Construct<DateTime>();
             }
+        }
+
+        [Test]
+        [Timeout(10000)]
+        public void ConstructorGuid_WithoutStringCorpus_ShouldBeOk()
+        {
+            var guids = new List<Guid>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var randomConstructor = new RandomTypeConstructor();
+                guids.Add(randomConstructor.Construct<Guid>());
+            }
+
+            guids.Any(g => g == Guid.Empty).Should().BeTrue();
+            guids.Any(g => g != Guid.Empty).Should().BeTrue();
+        }
+
+        [Test]
+        [Timeout(10000)]
+        public void ConstructorGuid_WithStringCorpus_ShouldBeOk()
+        {
+            var guids = new List<Guid>();
+            var guid = Guid.NewGuid();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var randomConstructor = new RandomTypeConstructor();
+                randomConstructor.AddStringToTestStringCorpus(guid.ToString());
+                guids.Add(randomConstructor.Construct<Guid>());
+            }
+
+            guids.Any(g => g == Guid.Empty).Should().BeTrue();
+            guids.Any(g => g != Guid.Empty).Should().BeTrue();
+            guids.Any(g => g == guid).Should().BeTrue();
         }
     }
 }

@@ -26,15 +26,15 @@ namespace FuzzerUnitTests.ConstructorTests
                 randomConstructor.AddStringToTestStringCorpus("TEST_STRING_CORPUSE");
             }
 
-            var list = new List<string>(5000);
+            var list = new List<string>(50000);
 
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 50000; i++)
             {
                 var obj = randomConstructor.Construct<string>();
                 list.Add(obj);
             }
 
-            list.Should().Contain("TEST_STRING_CORPUSE");
+            list.Any(s => s.Contains("TEST_STRING_CORPUSE")).Should().BeTrue();
         }
 
         [Test]
@@ -44,9 +44,9 @@ namespace FuzzerUnitTests.ConstructorTests
             var randomConstructor = new RandomTypeConstructor();
             randomConstructor.UseStringCorpus(userPath);
 
-            var list = new List<string>(10000);
+            var list = new List<string>(100000);
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 var obj = randomConstructor.Construct<string>();
                 list.Add(obj);

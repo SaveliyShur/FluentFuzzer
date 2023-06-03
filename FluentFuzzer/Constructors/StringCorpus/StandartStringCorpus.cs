@@ -18,7 +18,6 @@ namespace FuzzerRunner.Constructors.StringCorpus
             var files = Directory.GetFiles(_pathToFolder, "", SearchOption.AllDirectories);
 
             var startTitle = "Start";
-            _corpuseByTitle.Add(startTitle, new List<string>());
 
             foreach (var file in files)
             {

@@ -64,9 +64,10 @@
 
         private void AddLinesToDictionary(string[] lines)
         {
+            var corpusInDictionary = new List<string>();
+
             foreach (var line in lines)
             {
-                var corpusInDictionary = new List<string>();
                 if (line.StartsWith(IStringCorpuse.StandartTitleStart))
                 {
                     var title = line.Replace(IStringCorpuse.StandartTitleStart, "").Trim();

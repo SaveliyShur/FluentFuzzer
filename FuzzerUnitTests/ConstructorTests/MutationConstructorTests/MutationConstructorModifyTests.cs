@@ -164,6 +164,21 @@ namespace FuzzerUnitTests.ConstructorTests.MutationConstructorTests
 
         [Test]
         [Timeout(10000)]
+        public void MutationConstructor_MutateString_ShouldBeOk()
+        {
+            var mutationConstructor = new MutationConstructor<string>();
+            mutationConstructor.SetCountMutation(1);
+            mutationConstructor.SetAllowedMutation(new List<FluentFuzzer.Utils.MutationEnum> { FluentFuzzer.Utils.MutationEnum.Modify });
+            mutationConstructor.Add("string");
+
+            for (var i = 0; i < 100; i++)
+            {
+                mutationConstructor.Construct<string>();
+            }
+        }
+
+        [Test]
+        [Timeout(10000)]
         public void MutationConstructor_Modify_OneDictionary_ShouldBeOk()
         {
             var isNullAll = new List<bool>();

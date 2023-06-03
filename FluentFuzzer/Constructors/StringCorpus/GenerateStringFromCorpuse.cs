@@ -28,28 +28,69 @@ namespace FluentFuzzer.Constructors.StringCorpus
 
         public string GenerateRandomString()
         {
-            var standartStringCorpusList = _standartStringCorpus?.GetCorpuse() ?? new List<string>();
-            var userStringCorpusList = _userStringCorpus?.GetCorpuse() ?? new List<string>();
-            var testStringCorpusList = _testStringCorpus?.GetCorpuse() ?? new List<string>();
+            var standartStringTitles = _standartStringCorpus?.GetTitles() ?? new List<string>();
+            var userStringTitles = _userStringCorpus?.GetTitles() ?? new List<string>();
+            var testStringTitles = _testStringCorpus?.GetTitles() ?? new List<string>();
 
-            var countAllStrings = standartStringCorpusList.Count + userStringCorpusList.Count + testStringCorpusList.Count;
+            var countAllStrings = standartStringTitles.Count + userStringTitles.Count + testStringTitles.Count;
 
             if (countAllStrings == 0)
                 throw new ConstructException("Any corpus not found.");
 
             var randomCount = GetRandomInt(countAllStrings);
 
-            if (randomCount < standartStringCorpusList.Count)
-                return standartStringCorpusList[randomCount];
+            if (randomCount < standartStringTitles.Count)
+                return this.GetStringBySectionTitle(standartStringTitles[randomCount]);
 
-            randomCount = randomCount - standartStringCorpusList.Count;
+            randomCount = randomCount - standartStringTitles.Count;
 
-            if (randomCount < userStringCorpusList.Count)
-                return userStringCorpusList[randomCount];
+            if (randomCount < userStringTitles.Count)
+                return this.GetStringBySectionTitle(userStringTitles[randomCount]);
 
-            randomCount = randomCount - userStringCorpusList.Count;
+            randomCount = randomCount - userStringTitles.Count;
 
-            return testStringCorpusList[randomCount];
+            var title = testStringTitles[randomCount];
+
+            return this.GetStringBySectionTitle(title);
+        }
+
+        public string? GenerateRandomGuidStringFromStringCorpuse()
+        {
+            var standartStringCorpusList = _standartStringCorpus?.GetCorpuse() ?? new List<string>();
+            var userStringCorpusList = _userStringCorpus?.GetCorpuse() ?? new List<string>();
+            var testStringCorpusList = _testStringCorpus?.GetCorpuse() ?? new List<string>();
+
+            var listGuid = new List<string>();
+
+            foreach (var str in standartStringCorpusList)
+            {
+                if (Guid.TryParse(str, out var _))
+                {
+                    listGuid.Add(str);
+                }
+            }
+
+            foreach (var str in userStringCorpusList)
+            {
+                if (Guid.TryParse(str, out var _))
+                {
+                    listGuid.Add(str);
+                }
+            }
+
+            foreach (var str in testStringCorpusList)
+            {
+                if (Guid.TryParse(str, out var _))
+                {
+                    listGuid.Add(str);
+                }
+            }
+
+            if (listGuid.Count == 0)
+                return null;
+
+            var randomInt = GetRandomInt(listGuid.Count);
+            return listGuid[randomInt];
         }
 
         public string GetSectionTitleByString(string str)
