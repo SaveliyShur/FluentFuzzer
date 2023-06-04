@@ -15,6 +15,27 @@ namespace FuzzerUnitTests.ConstructorTests.MutationConstructorTests
     {
         [Test]
         [Timeout(10000)]
+        public void MutationConstructor_ModifyInt_ShouldBeOk()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var mutationConstructor = new MutationConstructor<IntClass>();
+                mutationConstructor.SetCountMutation(1);
+                mutationConstructor.SetAllowedMutation(new List<FluentFuzzer.Utils.MutationEnum> { FluentFuzzer.Utils.MutationEnum.Modify });
+                mutationConstructor.Add(new IntClass()
+                {
+                    Int = 10,
+                });
+                var obj = mutationConstructor.Construct<IntClass>();
+                if (obj is not null)
+                {
+                    obj.Int.Should().NotBe(10);
+                }
+            }
+        }
+
+        [Test]
+        [Timeout(10000)]
         public void MutationConstructor_Modify_ShouldBeOk()
         {
             for (int i = 0; i < 100; i++)

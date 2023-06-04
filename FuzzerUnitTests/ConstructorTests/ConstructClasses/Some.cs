@@ -2,6 +2,11 @@
 
 namespace FuzzerUnitTests.ConstructorTests.ConstructClasses
 {
+    public class IntClass
+    {
+        public int Int { get; set; } = 1;
+    }
+
     public class OneListClass
     {
         public List<string> List { get; set; }

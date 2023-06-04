@@ -18,7 +18,7 @@ namespace FluentFuzzer.DataPreparation
 
         public List<DataModel<T>> Data { get; private set; }
 
-        public async Task<string> PrepareDataToDataTableAsync(string folder)
+        public async Task<string> PrepareDataToDataTableAsync(string folder, bool isAddClassLabels = true)
         {
             if (!Directory.Exists(folder))
                 throw new ApplicationException("PrepareDataToDataTableAsync Folder not found. System error.");
@@ -32,11 +32,28 @@ namespace FluentFuzzer.DataPreparation
                 Delimiter = CSV_DELIMITER,
             };
 
-            using (var writer = new StreamWriter(pathToCsvFile))
-            using (var csv = new CsvWriter(writer, csvConfig))
+            if (!isAddClassLabels)
             {
-                await csv.WriteRecordsAsync(Data);
+                var listToSave = Data.Select(s => new DataModelWithoutClassLabel<T>()
+                {
+                    DataObject = s.DataObject,
+                });
+
+                using (var writer = new StreamWriter(pathToCsvFile))
+                using (var csv = new CsvWriter(writer, csvConfig))
+                {
+                    await csv.WriteRecordsAsync(listToSave);
+                }
             }
+            else
+            {
+                using (var writer = new StreamWriter(pathToCsvFile))
+                using (var csv = new CsvWriter(writer, csvConfig))
+                {
+                    await csv.WriteRecordsAsync(Data);
+                }
+            }
+            
 
             return pathToCsvFile;
         }
@@ -93,7 +110,7 @@ namespace FluentFuzzer.DataPreparation
             return objects.Count;
         }
 
-        public List<T> UploadDataTable(string pathToTable, string? separator = null)
+        public List<T> UploadDataTable(string pathToTable, string? separator = null, bool isAddClassLabels = true)
         {
             if (!File.Exists(pathToTable))
                 throw new ApplicationException("UploadDataTableAsync File not found. System error.");
@@ -105,9 +122,16 @@ namespace FluentFuzzer.DataPreparation
 
             using var reader = new StreamReader(pathToTable);
             using var csv = new CsvReader(reader, csvConfig);
-            var records = csv.GetRecords<DataModel<T>>().ToList();
-
-            return records.Select(record => record.DataObject).ToList();
+            if (isAddClassLabels)
+            {
+                var records = csv.GetRecords<DataModel<T>>().ToList();
+                return records.Select(record => record.DataObject).ToList();
+            }
+            else
+            {
+                var records = csv.GetRecords<DataModelWithoutClassLabel<T>>().ToList();
+                return records.Select(record => record.DataObject).ToList();
+            }
         }
     }
 }

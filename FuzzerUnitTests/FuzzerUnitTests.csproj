@@ -21,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ConstructorTests\Misc\Data\out_without_class_label.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ConstructorTests\Misc\Data\out.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -30,10 +33,6 @@
     <None Update="ConstructorTests\Misc\User\UserCorpus.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ConstructorTests\Misc\Data\" />
   </ItemGroup>
 
 </Project>

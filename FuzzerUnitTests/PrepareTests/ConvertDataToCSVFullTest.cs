@@ -101,6 +101,36 @@ namespace FuzzerUnitTests.PrepareTests
             dataFirst.PrepareClass1_Inner = null;
         }
 
+        [Test]
+        public async Task ConvertToCsv_CheckCsv_WithoutClassLabel_ShouldBeOk()
+        {
+            var request = await Fuzzer.Instance
+                .MakeParallelExecution(4)
+                .WriteResultToFolder(_testDir)
+                .SetTestName(_testName)
+                .RunAsync<PrepareClass1>(async prep =>
+                {
+                    if (prep == null)
+                        return;
+
+                    await Task.Delay(100);
+                    if (prep.PrepareClass1_Inner is null)
+                        throw new Exception("1");
+                    if (prep.PrepareClass1_Enum == PrepareClass1_Enum.Lena)
+                        throw new Exception("2");
+                    throw new Exception("3");
+                }, timeInSec: 10);
+
+            var files = Directory.GetFiles(_fullTestFolder).Where(f => f.EndsWith("error.log")).ToArray();
+
+            var dataPrepare = new DataPrepare<PrepareClass1>();
+            await dataPrepare.UploadDataAsync(_fullTestFolder, false);
+            var pathToTable = await dataPrepare.PrepareDataToDataTableAsync(_fullTestFolder, false);
+
+            var dataAfterCsv = dataPrepare.UploadDataTable(pathToTable, isAddClassLabels: false);
+            dataAfterCsv.Should().HaveCount(files.Length);
+        }
+
         [TearDown]
         public void TearDown()
         {
