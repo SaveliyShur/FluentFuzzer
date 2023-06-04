@@ -8,7 +8,7 @@ namespace FluentFuzzer.Constructors.Constructors
     public class SimpleConstructor<Model> : BaseConstructor, IUploadObjects<Model> where Model : class
     {
         private List<Model> _objects = new ();
-        private int _counter = 0;
+        private int _counter = -1;
 
         private static readonly object _lock = new ();
 
@@ -21,7 +21,7 @@ namespace FluentFuzzer.Constructors.Constructors
 
             lock(_lock)
             {
-                if (_counter >= _objects.Count)
+                if (_counter >= _objects.Count - 1)
                     throw new ConstructorBreakException("All objects were constructed.");
 
                 _counter++;
